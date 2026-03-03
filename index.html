@@ -1,1 +1,170 @@
+<!doctype html>
+<html lang="hu">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Baj - Áramszámla Kalkulátor</title>
+  <style id="theme-style">
+    /* Alapértelmezett (Új Modern) stílus */
+    :root {
+      --bg: #0f172a;
+      --card-bg: rgba(30, 41, 59, 0.7);
+      --accent: #38bdf8;
+      --text-main: #f1f5f9;
+      --text-dim: #94a3b8;
+      --input-bg: rgba(15, 23, 42, 0.5);
+    }
 
+    /* Régi stílus felülírása */
+    .theme-old {
+      --bg: #f0f2f5;
+      --card-bg: #ffffff;
+      --accent: #0056b3;
+      --text-main: #333333;
+      --text-dim: #666666;
+      --input-bg: #ffffff;
+    }
+
+    body { 
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
+      background: var(--bg);
+      color: var(--text-main);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      margin: 0;
+      transition: all 0.4s ease;
+    }
+
+    .container { position: relative; width: 100%; max-width: 400px; padding: 20px; }
+
+    .glass-card {
+      background: var(--card-bg);
+      backdrop-filter: blur(12px);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 24px;
+      padding: 30px;
+      box-shadow: 0 20px 50px rgba(0,0,0,0.2);
+      transition: all 0.4s ease;
+    }
+
+    .theme-old .glass-card {
+        border: 1px solid #ccc;
+        box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+        border-radius: 8px;
+    }
+
+    .theme-toggle {
+      position: absolute;
+      top: 0;
+      right: 20px;
+      background: var(--accent);
+      color: white;
+      border: none;
+      padding: 8px 15px;
+      border-radius: 20px;
+      cursor: pointer;
+      font-size: 0.7rem;
+      font-weight: bold;
+      z-index: 10;
+    }
+
+    h1 {
+      font-size: 1.2rem;
+      text-align: center;
+      margin-bottom: 25px;
+      letter-spacing: 1px;
+    }
+
+    .input-wrapper { margin-bottom: 25px; text-align: center; }
+    label { font-size: 0.75rem; color: var(--text-dim); text-transform: uppercase; }
+    
+    input {
+      width: 100%;
+      background: var(--input-bg);
+      border: 2px solid var(--accent);
+      border-radius: 12px;
+      padding: 12px;
+      color: var(--text-main);
+      font-size: 1.8rem;
+      font-weight: 700;
+      text-align: center;
+      margin-top: 10px;
+      box-sizing: border-box;
+    }
+
+    .stat-row { display: flex; justify-content: space-between; font-size: 0.9rem; margin-bottom: 10px; }
+    .divider { height: 1px; background: rgba(128,128,128,0.2); margin: 20px 0; }
+    
+    .total-container { text-align: center; }
+    .total-value { font-size: 2.5rem; font-weight: 800; display: block; color: var(--text-main); }
+    
+    .badge {
+      font-size: 0.65rem;
+      background: rgba(56, 189, 248, 0.2);
+      color: var(--accent);
+      padding: 3px 10px;
+      border-radius: 10px;
+      margin-bottom: 5px;
+      display: inline-block;
+    }
+  </style>
+</head>
+<body class="">
+
+<div class="container">
+  <button class="theme-toggle" onclick="toggleTheme()">STÍLUS VÁLTÁS</button>
+  
+  <div class="glass-card">
+    <div style="text-align: center;"><span class="badge">BAJ TELEPÜLÉS</span></div>
+    <h1>ÁRAM KALKULÁTOR</h1>
+    
+    <div class="input-wrapper">
+      <label>Havi fogyasztás (kWh)</label>
+      <input id="cons" type="number" value="300" inputmode="decimal">
+    </div>
+
+    <div class="stat-row"><span>Kedvezményes (208 kWh):</span> <b id="outLow">0 Ft</b></div>
+    <div class="stat-row"><span>Piaci ár felette:</span> <b id="outHigh">0 Ft</b></div>
+    
+    <div class="divider"></div>
+    
+    <div class="total-container">
+      <div style="font-size: 0.8rem; color: var(--accent);">FIZETENDŐ ÖSSZEG</div>
+      <div id="outTotal" class="total-value">0 Ft</div>
+    </div>
+  </div>
+</div>
+
+<script>
+  const consInput = document.getElementById('cons');
+  const body = document.body;
+
+  function toggleTheme() {
+    body.classList.toggle('theme-old');
+  }
+
+  function calculate() {
+    const val = parseFloat(consInput.value) || 0;
+    const limit = 208; // Bajra kért limit
+    
+    const lowKwh = Math.min(val, limit);
+    const highKwh = Math.max(0, val - limit);
+    
+    // Aktuális bruttó lakossági árak (MVM/E.ON Baj környékén)
+    const lowCost = Math.round(lowKwh * 36);
+    const highCost = Math.round(highKwh * 70.1);
+    const total = lowCost + highCost;
+
+    document.getElementById('outLow').textContent = lowCost.toLocaleString('hu-HU') + ' Ft';
+    document.getElementById('outHigh').textContent = highCost.toLocaleString('hu-HU') + ' Ft';
+    document.getElementById('outTotal').textContent = total.toLocaleString('hu-HU') + ' Ft';
+  }
+
+  consInput.addEventListener('input', calculate);
+  calculate();
+</script>
+
+</body>
+</html>
