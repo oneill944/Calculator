@@ -4,8 +4,7 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
   <title>Baj - Áramszámla Kalkulátor</title>
-  <style id="theme-style">
-    /* Alapértelmezett: Világos (Régi) stílus */
+  <style>
     :root {
       --bg: #f0f2f5;
       --card-bg: #ffffff;
@@ -16,7 +15,6 @@
       --border: #cccccc;
     }
 
-    /* Új Modern (Sötét) stílus */
     .theme-dark {
       --bg: #0f172a;
       --card-bg: rgba(30, 41, 59, 0.7);
@@ -33,138 +31,157 @@
       color: var(--text-main);
       display: flex;
       justify-content: center;
-      align-items: flex-start; /* Felülre igazítva */
+      align-items: flex-start;
       min-height: 100vh;
       margin: 0;
-      padding-top: 20px; /* Egy kicsi távolság a legtetejétől */
-      transition: background 0.4s ease;
+      padding-top: 30px;
+      transition: all 0.4s ease;
     }
 
-    .container { position: relative; width: 100%; max-width: 400px; padding: 15px; }
+    .container { position: relative; width: 100%; max-width: 450px; padding: 20px; }
 
     .glass-card {
       background: var(--card-bg);
       backdrop-filter: blur(12px);
       border: 1px solid var(--border);
-      border-radius: 12px;
-      padding: 25px;
-      box-shadow: 0 4px 15px rgba(0,0,0,0.1);
-      transition: all 0.4s ease;
-    }
-
-    /* Sötét mód speciális kerekítése */
-    .theme-dark .glass-card {
       border-radius: 24px;
-      box-shadow: 0 20px 50px rgba(0,0,0,0.3);
+      padding: 25px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.1);
     }
 
     .theme-toggle {
-      width: 100%;
+      position: absolute;
+      top: -10px;
+      right: 20px;
       background: var(--accent);
       color: white;
       border: none;
-      padding: 10px;
-      border-radius: 8px;
+      padding: 8px 15px;
+      border-radius: 20px;
       cursor: pointer;
-      font-size: 0.75rem;
+      font-size: 0.7rem;
       font-weight: bold;
-      margin-bottom: 15px;
-      transition: opacity 0.2s;
+      z-index: 10;
     }
 
-    h1 {
-      font-size: 1.1rem;
-      text-align: center;
-      margin-bottom: 20px;
-      letter-spacing: 1px;
+    .location-tag {
+      font-size: 0.7rem;
+      background: rgba(56, 189, 248, 0.1);
+      color: var(--accent);
+      padding: 4px 12px;
+      border-radius: 20px;
+      display: inline-block;
+      margin-bottom: 10px;
+      font-weight: bold;
     }
 
-    .input-wrapper { margin-bottom: 20px; text-align: center; }
+    h1 { font-size: 1.2rem; text-align: center; margin-bottom: 20px; font-weight: 800; }
+
+    .input-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 25px; }
+    .input-wrapper { text-align: center; }
     label { font-size: 0.7rem; color: var(--text-dim); text-transform: uppercase; display: block; margin-bottom: 5px; }
     
     input {
       width: 100%;
       background: var(--input-bg);
       border: 2px solid var(--accent);
-      border-radius: 8px;
-      padding: 10px;
+      border-radius: 12px;
+      padding: 12px;
       color: var(--text-main);
-      font-size: 1.8rem;
+      font-size: 1.4rem;
       font-weight: 700;
       text-align: center;
       box-sizing: border-box;
     }
 
+    /* Placeholder stílus finomítása */
+    input::placeholder {
+      color: var(--text-dim);
+      opacity: 0.5;
+    }
+
+    input:focus { outline: none; border-color: var(--accent); }
+
+    h2 { font-size: 0.8rem; text-transform: uppercase; color: var(--accent); border-bottom: 1px solid var(--border); padding-bottom: 5px; margin-top: 15px; }
+
     .stat-row { display: flex; justify-content: space-between; font-size: 0.85rem; margin-bottom: 8px; }
-    .divider { height: 1px; background: var(--border); margin: 15px 0; }
+    .stat-row span { color: var(--text-dim); }
+    .divider { height: 2px; background: var(--accent); opacity: 0.3; margin: 15px 0; }
     
     .total-container { text-align: center; }
-    .total-value { font-size: 2.5rem; font-weight: 800; display: block; color: var(--text-main); }
-    
-    .badge {
-      font-size: 0.6rem;
-      background: rgba(0, 86, 179, 0.1);
-      color: var(--accent);
-      padding: 3px 10px;
-      border-radius: 10px;
-      margin-bottom: 5px;
-      display: inline-block;
-      font-weight: bold;
-    }
+    .total-value { font-size: 2.5rem; font-weight: 800; display: block; margin-top: 5px; }
   </style>
 </head>
-<body class="">
+<body>
 
 <div class="container">
-  <button class="theme-toggle" onclick="toggleTheme()">STÍLUS VÁLTÁSA</button>
+  <button class="theme-toggle" onclick="toggleTheme()">STÍLUS VÁLTÁS</button>
   
   <div class="glass-card">
-    <div style="text-align: center;"><span class="badge">HELYSZÍN: BAJ</span></div>
-    <h1>ÁRAM KALKULÁTOR</h1>
+    <div style="text-align: center;"><span class="location-tag">HELYSZÍN: BAJ</span></div>
+    <h1>ÁRAM SZÁMLA KALKULÁTOR</h1>
     
-    <div class="input-wrapper">
-      <label>Havi fogyasztás (kWh)</label>
-      <input id="cons" type="number" value="300" inputmode="decimal">
+    <div class="input-grid">
+      <div class="input-wrapper">
+        <label>Normál (A1)</label>
+        <input id="consA" type="number" placeholder="0" inputmode="decimal">
+      </div>
+      <div class="input-wrapper">
+        <label>Éjszakai (B)</label>
+        <input id="consB" type="number" placeholder="0" inputmode="decimal">
+      </div>
     </div>
 
-    <div class="stat-row"><span>Kedvezményes (208 kWh):</span> <b id="outLow">0 Ft</b></div>
-    <div class="stat-row"><span>Piaci ár felette:</span> <b id="outHigh">0 Ft</b></div>
+    <h2>Normál elszámolás (A1)</h2>
+    <div class="stat-row"><span>Kedvezményes (210 kWh / 36 Ft):</span> <b id="outLowA">0 Ft</b></div>
+    <div class="stat-row"><span>Piaci ár felette (70.1 Ft):</span> <b id="outHighA">0 Ft</b></div>
+
+    <h2>Éjszakai elszámolás (B)</h2>
+    <div class="stat-row"><span>Kedvezményes (210 kWh / 23.1 Ft):</span> <b id="outLowB">0 Ft</b></div>
+    <div class="stat-row"><span>Piaci ár felette (60.9 Ft):</span> <b id="outHighB">0 Ft</b></div>
     
     <div class="divider"></div>
     
     <div class="total-container">
-      <div style="font-size: 0.75rem; color: var(--accent); font-weight: bold;">VÁRHATÓ HAVI ÖSSZEG</div>
+      <div style="font-size: 0.8rem; color: var(--accent); font-weight: bold;">ÖSSZESEN FIZETENDŐ</div>
       <div id="outTotal" class="total-value">0 Ft</div>
     </div>
   </div>
 </div>
 
 <script>
-  const consInput = document.getElementById('cons');
-  const body = document.body;
+  const inputA = document.getElementById('consA');
+  const inputB = document.getElementById('consB');
 
   function toggleTheme() {
-    body.classList.toggle('theme-dark');
+    document.body.classList.toggle('theme-dark');
   }
 
   function calculate() {
-    const val = parseFloat(consInput.value) || 0;
-    const limit = 208;
+    // Ha üres a mező (placeholder van kint), 0-val számolunk
+    const valA = parseFloat(inputA.value) || 0;
+    const valB = parseFloat(inputB.value) || 0;
+    const limit = 210;
     
-    const lowKwh = Math.min(val, limit);
-    const highKwh = Math.max(0, val - limit);
+    const lowA = Math.min(valA, limit) * 36;
+    const highA = Math.max(0, valA - limit) * 70.1;
     
-    // Bruttó árak (Baj település)
-    const lowCost = Math.round(lowKwh * 36);
-    const highCost = Math.round(highKwh * 70.1);
-    const total = lowCost + highCost;
+    const lowB = Math.min(valB, limit) * 23.1;
+    const highB = Math.max(0, valB - limit) * 60.9;
+    
+    const total = Math.round(lowA + highA + lowB + highB);
 
-    document.getElementById('outLow').textContent = lowCost.toLocaleString('hu-HU') + ' Ft';
-    document.getElementById('outHigh').textContent = highCost.toLocaleString('hu-HU') + ' Ft';
+    document.getElementById('outLowA').textContent = Math.round(lowA).toLocaleString('hu-HU') + ' Ft';
+    document.getElementById('outHighA').textContent = Math.round(highA).toLocaleString('hu-HU') + ' Ft';
+    document.getElementById('outLowB').textContent = Math.round(lowB).toLocaleString('hu-HU') + ' Ft';
+    document.getElementById('outHighB').textContent = Math.round(highB).toLocaleString('hu-HU') + ' Ft';
     document.getElementById('outTotal').textContent = total.toLocaleString('hu-HU') + ' Ft';
   }
 
-  consInput.addEventListener('input', calculate);
+  [inputA, inputB].forEach(input => {
+    input.addEventListener('input', calculate);
+  });
+
   calculate();
 </script>
 
