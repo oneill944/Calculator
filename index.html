@@ -62,6 +62,7 @@
       font-size: 0.7rem;
       font-weight: bold;
       z-index: 10;
+      text-transform: uppercase;
     }
 
     .location-tag {
@@ -94,7 +95,6 @@
       box-sizing: border-box;
     }
 
-    /* Placeholder stílus finomítása */
     input::placeholder {
       color: var(--text-dim);
       opacity: 0.5;
@@ -115,7 +115,7 @@
 <body>
 
 <div class="container">
-  <button class="theme-toggle" onclick="toggleTheme()">STÍLUS VÁLTÁS</button>
+  <button id="themeBtn" class="theme-toggle" onclick="toggleTheme()">SÖTÉT MÓD</button>
   
   <div class="glass-card">
     <div style="text-align: center;"><span class="location-tag">HELYSZÍN: BAJ</span></div>
@@ -152,13 +152,14 @@
 <script>
   const inputA = document.getElementById('consA');
   const inputB = document.getElementById('consB');
+  const themeBtn = document.getElementById('themeBtn');
 
   function toggleTheme() {
-    document.body.classList.toggle('theme-dark');
+    const isDark = document.body.classList.toggle('theme-dark');
+    themeBtn.textContent = isDark ? 'VILÁGOS MÓD' : 'SÖTÉT MÓD';
   }
 
   function calculate() {
-    // Ha üres a mező (placeholder van kint), 0-val számolunk
     const valA = parseFloat(inputA.value) || 0;
     const valB = parseFloat(inputB.value) || 0;
     const limit = 210;
